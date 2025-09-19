@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Datos - Ingenieros Especialistas</title>
+    <link rel="stylesheet" href="../style/style.css">
+</head>
+<body>
+    <header>
+        <h1>Base de Datos - Ingenieros Especialistas</h1>
+    </header>
+
+    <main>
+    <!-- Imagen del Diagrama de Base de Datos -->
+    <section>
+        <h2>Diagrama de Base de Datos - Ingenieros Especialistas</h2>
+        <img src="../assets/Diagrama_Ingenieros_Especialistas.png" alt="Diagrama de la base de datos de Ingenieros Especialistas" class="db-diagram">
+        <p>El diagrama muestra las relaciones entre las tablas: Especialidad, Ingeniero, Proyecto, IngenieroProyecto y Contacto.</p>
+    </section>
+
+
+        <!-- Tabla Especialidad -->
+        <section>
+            <h2>Tabla Especialidad</h2>
+            <p><strong>Propósito:</strong> Almacena las áreas de especialización de los ingenieros especialistas, permitiendo clasificar a los ingenieros según su competencia para asignación de proyectos.</p>
+            <ul>
+                <li><strong>especialidadID:</strong> Clave primaria única que identifica cada especialidad.</li>
+                <li><strong>nombreEspecialidad:</strong> Nombre descriptivo de la especialidad (Ej. Eléctrico, Mecánico, Hidráulico).</li>
+            </ul>
+        </section>
+
+        <!-- Tabla Ingeniero -->
+        <section>
+            <h2>Tabla Ingeniero</h2>
+            <p><strong>Propósito:</strong> Almacena la información de cada ingeniero especialista registrado en la constructora, incluyendo identidad y especialidad.</p>
+            <ul>
+                <li><strong>ingenieroID:</strong> Clave primaria única que identifica a cada ingeniero.</li>
+                <li><strong>nombre:</strong> Nombre completo del ingeniero.</li>
+                <li><strong>especialidadID:</strong> Clave foránea que relaciona al ingeniero con su especialidad.</li>
+            </ul>
+        </section>
+
+        <!-- Tabla Proyecto -->
+        <section>
+            <h2>Tabla Proyecto</h2>
+            <p><strong>Propósito:</strong> Registra todos los proyectos de la constructora, permitiendo planificar, asignar y dar seguimiento a los ingenieros asignados.</p>
+            <ul>
+                <li><strong>proyectoID:</strong> Clave primaria única que identifica cada proyecto.</li>
+                <li><strong>nombreProyecto:</strong> Nombre descriptivo del proyecto.</li>
+            </ul>
+        </section>
+
+        <!-- Tabla IngenieroProyecto -->
+        <section>
+            <h2>Tabla IngenieroProyecto</h2>
+            <p><strong>Propósito:</strong> Gestiona la relación muchos a muchos entre ingenieros y proyectos, permitiendo asignar varios ingenieros a un proyecto y un ingeniero a varios proyectos.</p>
+            <ul>
+                <li><strong>ingenieroID:</strong> Clave foránea al ingeniero.</li>
+                <li><strong>proyectoID:</strong> Clave foránea al proyecto.</li>
+                <li><strong>Clave primaria compuesta (ingenieroID, proyectoID):</strong> Asegura unicidad en cada asignación.</li>
+            </ul>
+        </section>
+
+        <!-- Tabla Contacto -->
+        <section>
+            <h2>Tabla Contacto</h2>
+            <p><strong>Propósito:</strong> Almacena los contactos de cada ingeniero, permitiendo comunicación directa con clientes, supervisores u otros miembros del equipo.</p>
+            <ul>
+                <li><strong>contactoID:</strong> Clave primaria única que identifica cada contacto.</li>
+                <li><strong>ingenieroID:</strong> Clave foránea que vincula el contacto al ingeniero correspondiente.</li>
+                <li><strong>contacto:</strong> Información de contacto (correo, teléfono u otro medio).</li>
+            </ul>
+        </section>
+
+        <!-- Normalización -->
+        <section>
+            <h2>Normalización de la Base de Datos</h2>
+            <h3>1NF (Primera Forma Normal)</h3>
+            <p>Todas las tablas tienen clave primaria única y campos atómicos. Ejemplo:</p>
+            <ul>
+                <li>Especialidad: <code>nombreEspecialidad</code> es un valor único por fila.</li>
+                <li>Ingeniero: <code>nombre</code> y <code>especialidadID</code> son valores individuales.</li>
+            </ul>
+
+            <h3>2NF (Segunda Forma Normal)</h3>
+            <p>Todos los atributos dependen completamente de la clave primaria de cada tabla. Ejemplo:</p>
+            <ul>
+                <li>Ingeniero: <code>nombre</code> depende totalmente de <code>ingenieroID</code>.</li>
+                <li>IngenieroProyecto: La combinación <code>(ingenieroID, proyectoID)</code> asegura dependencia total de la clave compuesta.</li>
+            </ul>
+
+            <h3>3NF (Tercera Forma Normal)</h3>
+            <p>No existen dependencias transitivas entre atributos no clave. Ejemplo:</p>
+            <ul>
+                <li>Contacto: <code>contacto</code> depende solo de <code>contactoID</code> y está vinculado a un ingeniero mediante <code>ingenieroID</code>.</li>
+                <li>Ingeniero: <code>nombre</code> y <code>especialidadID</code> dependen únicamente de <code>ingenieroID</code>.</li>
+            </ul>
+        </section>
+
+        <section>
+    <h2>Script SQL del Subsistema</h2>
+    <p>A continuación se muestra el script SQL utilizado para crear la base de datos de Ingenieros Especialistas:</p>
+    <pre><code>
+CREATE DATABASE Constructora;
+GO
+USE Constructora;
+GO
+
+-- ==========================
+-- Tabla de Especialidades
+-- ==========================
+CREATE TABLE Especialidad (
+    especialidadID INT IDENTITY PRIMARY KEY,
+    nombreEspecialidad VARCHAR(50) NOT NULL
+);
+
+INSERT INTO Especialidad (nombreEspecialidad)
+VALUES ('Eléctrico'), ('Mecánico'), ('Hidráulico');
+
+-- ==========================
+-- Tabla de Ingenieros
+-- ==========================
+CREATE TABLE Ingeniero (
+    ingenieroID INT IDENTITY PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    especialidadID INT NOT NULL,
+    FOREIGN KEY (especialidadID) REFERENCES Especialidad(especialidadID)
+);
+
+-- ==========================
+-- Tabla de Proyectos
+-- ==========================
+CREATE TABLE Proyecto (
+    proyectoID INT IDENTITY PRIMARY KEY,
+    nombreProyecto VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IngenieroProyecto (
+    ingenieroID INT NOT NULL,
+    proyectoID INT NOT NULL,
+    PRIMARY KEY (ingenieroID, proyectoID),
+    FOREIGN KEY (ingenieroID) REFERENCES Ingeniero(ingenieroID),
+    FOREIGN KEY (proyectoID) REFERENCES Proyecto(proyectoID)
+);
+
+-- ==========================
+-- Tabla de Contactos
+-- ==========================
+CREATE TABLE Contacto (
+    contactoID INT IDENTITY PRIMARY KEY,
+    ingenieroID INT NOT NULL,
+    contacto VARCHAR(100) NOT NULL,
+    FOREIGN KEY (ingenieroID) REFERENCES Ingeniero(ingenieroID)
+);
+    </code></pre>
+</section>
+
+<section>
+    <h2>Script de Inserción de Registros</h2>
+    <p>A continuación se muestran los scripts SQL para generar 10 registros de ejemplo para cada tabla:</p>
+
+    <!-- Especialidad -->
+    <h3>Tabla Especialidad</h3>
+    <pre><code>
+INSERT INTO Especialidad (nombreEspecialidad) VALUES
+('Eléctrico'),
+('Mecánico'),
+('Hidráulico'),
+('Civil'),
+('Estructural'),
+('Industrial'),
+('Ambiental'),
+('Geotécnico'),
+('Topográfico'),
+('Sistemas');
+    </code></pre>
+
+    <!-- Ingeniero -->
+    <h3>Tabla Ingeniero</h3>
+    <pre><code>
+INSERT INTO Ingeniero (nombre, especialidadID) VALUES
+('Juan Pérez', 1),
+('María López', 2),
+('Carlos Ramírez', 3),
+('Ana Torres', 4),
+('Luis García', 5),
+('Sofía Martínez', 6),
+('Jorge Fernández', 7),
+('Paula Sánchez', 8),
+('Diego Moreno', 9),
+('Laura Díaz', 10);
+    </code></pre>
+
+    <!-- Proyecto -->
+    <h3>Tabla Proyecto</h3>
+    <pre><code>
+INSERT INTO Proyecto (nombreProyecto) VALUES
+('Edificio Central'),
+('Plaza Comercial'),
+('Parque Ecológico'),
+('Residencia Los Álamos'),
+('Hospital General'),
+('Escuela Técnica'),
+('Torre Empresarial'),
+('Centro Deportivo'),
+('Museo de Arte'),
+('Vivienda Social');
+    </code></pre>
+
+    <!-- IngenieroProyecto -->
+    <h3>Tabla IngenieroProyecto</h3>
+    <pre><code>
+INSERT INTO IngenieroProyecto (ingenieroID, proyectoID) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10);
+    </code></pre>
+
+    <!-- Contacto -->
+    <h3>Tabla Contacto</h3>
+    <pre><code>
+INSERT INTO Contacto (ingenieroID, contacto) VALUES
+(1, 'juan.perez@constructora.com'),
+(2, 'maria.lopez@constructora.com'),
+(3, 'carlos.ramirez@constructora.com'),
+(4, 'ana.torres@constructora.com'),
+(5, 'luis.garcia@constructora.com'),
+(6, 'sofia.martinez@constructora.com'),
+(7, 'jorge.fernandez@constructora.com'),
+(8, 'paula.sanchez@constructora.com'),
+(9, 'diego.moreno@constructora.com'),
+(10, 'laura.diaz@constructora.com');
+    </code></pre>
+</section>
+
+
+
+<section>
+    <h2>Registros de Ejemplo</h2>
+    <p>A continuación se muestran 10 registros de ejemplo para cada tabla del subsistema de Ingenieros Especialistas:</p>
+
+    <!-- Tabla Especialidad -->
+    <h3>Tabla Especialidad</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>especialidadID</th>
+                <th>nombreEspecialidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>Eléctrico</td></tr>
+            <tr><td>2</td><td>Mecánico</td></tr>
+            <tr><td>3</td><td>Hidráulico</td></tr>
+            <tr><td>4</td><td>Civil</td></tr>
+            <tr><td>5</td><td>Estructural</td></tr>
+            <tr><td>6</td><td>Industrial</td></tr>
+            <tr><td>7</td><td>Ambiental</td></tr>
+            <tr><td>8</td><td>Geotécnico</td></tr>
+            <tr><td>9</td><td>Topográfico</td></tr>
+            <tr><td>10</td><td>Sistemas</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Tabla Ingeniero -->
+    <h3>Tabla Ingeniero</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ingenieroID</th>
+                <th>nombre</th>
+                <th>especialidadID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>Juan Pérez</td><td>1</td></tr>
+            <tr><td>2</td><td>María López</td><td>2</td></tr>
+            <tr><td>3</td><td>Carlos Ramírez</td><td>3</td></tr>
+            <tr><td>4</td><td>Ana Torres</td><td>4</td></tr>
+            <tr><td>5</td><td>Luis García</td><td>5</td></tr>
+            <tr><td>6</td><td>Sofía Martínez</td><td>6</td></tr>
+            <tr><td>7</td><td>Jorge Fernández</td><td>7</td></tr>
+            <tr><td>8</td><td>Paula Sánchez</td><td>8</td></tr>
+            <tr><td>9</td><td>Diego Moreno</td><td>9</td></tr>
+            <tr><td>10</td><td>Laura Díaz</td><td>10</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Tabla Proyecto -->
+    <h3>Tabla Proyecto</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>proyectoID</th>
+                <th>nombreProyecto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>Edificio Central</td></tr>
+            <tr><td>2</td><td>Plaza Comercial</td></tr>
+            <tr><td>3</td><td>Parque Ecológico</td></tr>
+            <tr><td>4</td><td>Residencia Los Álamos</td></tr>
+            <tr><td>5</td><td>Hospital General</td></tr>
+            <tr><td>6</td><td>Escuela Técnica</td></tr>
+            <tr><td>7</td><td>Torre Empresarial</td></tr>
+            <tr><td>8</td><td>Centro Deportivo</td></tr>
+            <tr><td>9</td><td>Museo de Arte</td></tr>
+            <tr><td>10</td><td>Vivienda Social</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Tabla IngenieroProyecto -->
+    <h3>Tabla IngenieroProyecto</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ingenieroID</th>
+                <th>proyectoID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>1</td></tr>
+            <tr><td>2</td><td>2</td></tr>
+            <tr><td>3</td><td>3</td></tr>
+            <tr><td>4</td><td>4</td></tr>
+            <tr><td>5</td><td>5</td></tr>
+            <tr><td>6</td><td>6</td></tr>
+            <tr><td>7</td><td>7</td></tr>
+            <tr><td>8</td><td>8</td></tr>
+            <tr><td>9</td><td>9</td></tr>
+            <tr><td>10</td><td>10</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Tabla Contacto -->
+    <h3>Tabla Contacto</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>contactoID</th>
+                <th>ingenieroID</th>
+                <th>contacto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>1</td><td>juan.perez@constructora.com</td></tr>
+            <tr><td>2</td><td>2</td><td>maria.lopez@constructora.com</td></tr>
+            <tr><td>3</td><td>3</td><td>carlos.ramirez@constructora.com</td></tr>
+            <tr><td>4</td><td>4</td><td>ana.torres@constructora.com</td></tr>
+            <tr><td>5</td><td>5</td><td>luis.garcia@constructora.com</td></tr>
+            <tr><td>6</td><td>6</td><td>sofia.martinez@constructora.com</td></tr>
+            <tr><td>7</td><td>7</td><td>jorge.fernandez@constructora.com</td></tr>
+            <tr><td>8</td><td>8</td><td>paula.sanchez@constructora.com</td></tr>
+            <tr><td>9</td><td>9</td><td>diego.moreno@constructora.com</td></tr>
+            <tr><td>10</td><td>10</td><td>laura.diaz@constructora.com</td></tr>
+        </tbody>
+    </table>
+</section>
+
+
+        <!-- Botón de regreso -->
+        <a href="../subsystems/ingenieros_especialistas.html" class="back-button">← Regresar a Ingenieros Especialistas</a>
+    </main>
+
+    <footer>
+        &copy; 2025 Constructora Pequeña | Todos los derechos reservados
+    </footer>
+</body>
+</html>

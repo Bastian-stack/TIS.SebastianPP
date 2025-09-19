@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Base de Datos - Diseñador de Interiores / Paisajista</title>
+    <link rel="stylesheet" href="../style/style.css">
+</head>
+<body>
+    <header>
+        <h1>Base de Datos - Diseñador de Interiores / Paisajista</h1>
+    </header>
+
+    <main>
+        <!-- Imagen del Diagrama -->
+        <section>
+            <h2>Diagrama de Base de Datos</h2>
+            <img src="../assets/Diagrama_Diseñador_Interiores.png" alt="Diagrama de la base de datos de Diseñadores" class="db-diagram">
+            <p>El diagrama representa las relaciones entre las tablas: <strong>EspecialidadDiseñador</strong>, 
+                <strong>Diseñador</strong>, <strong>Proyecto</strong>, <strong>DiseñadorProyecto</strong> y 
+                <strong>Diseño</strong>.</p>
+        </section>
+
+        <!-- Tabla EspecialidadDiseñador -->
+        <section>
+            <h2>Tabla <em>EspecialidadDiseñador</em></h2>
+            <p><strong>Propósito:</strong> Contiene las áreas de especialización de los diseñadores (por ejemplo: Interiorista, Paisajista). Esta tabla permite clasificar a cada diseñador según su competencia, facilitando la asignación adecuada a proyectos.</p>
+            <h3>Campos</h3>
+            <ul>
+                <li><strong>especialidadDiseñadorID</strong>: Clave primaria (IDENTITY) — identifica de forma única cada especialidad.</li>
+                <li><strong>nombreEspecialidad</strong>: Texto descriptivo de la especialidad (VARCHAR(50)).</li>
+            </ul>
+        </section>
+
+        <!-- Tabla Diseñador -->
+        <section>
+            <h2>Tabla <em>Diseñador</em></h2>
+            <p><strong>Propósito:</strong> Almacena la información de los diseñadores de interiores y paisajistas registrados en la constructora. Sirve para identificar al profesional, su especialidad y vincularlo a proyectos.</p>
+            <h3>Campos</h3>
+            <ul>
+                <li><strong>diseñadorID</strong>: Clave primaria (IDENTITY) — identifica a cada diseñador.</li>
+                <li><strong>nombre</strong>: Nombre completo del diseñador (VARCHAR(100)).</li>
+                <li><strong>especialidadDiseñadorID</strong>: Clave foránea que enlaza con <em>EspecialidadDiseñador(especialidadDiseñadorID)</em>.</li>
+            </ul>
+        </section>
+
+        <!-- Tabla Proyecto -->
+        <section>
+            <h2>Tabla <em>Proyecto</em></h2>
+            <p><strong>Propósito:</strong> Registra los proyectos en los que la constructora trabaja. Cada registro representa una obra o encargo donde se podrán asociar diseñadores y diseños.</p>
+            <h3>Campos</h3>
+            <ul>
+                <li><strong>proyectoID</strong>: Clave primaria (IDENTITY) — identifica de forma única cada proyecto.</li>
+                <li><strong>nombreProyecto</strong>: Nombre descriptivo del proyecto (VARCHAR(100)).</li>
+            </ul>
+        </section>
+
+        <!-- Tabla DiseñadorProyecto -->
+        <section>
+            <h2>Tabla <em>DiseñadorProyecto</em></h2>
+            <p><strong>Propósito:</strong> Gestiona la relación muchos-a-muchos entre diseñadores y proyectos. Permite asignar varios diseñadores a un mismo proyecto y viceversa.</p>
+            <h3>Campos</h3>
+            <ul>
+                <li><strong>diseñadorID</strong>: Clave foránea a <em>Diseñador(diseñadorID)</em>.</li>
+                <li><strong>proyectoID</strong>: Clave foránea a <em>Proyecto(proyectoID)</em>.</li>
+                <li><strong>Clave primaria compuesta (diseñadorID, proyectoID)</strong>: Garantiza que cada par diseñador–proyecto sea único.</li>
+            </ul>
+        </section>
+
+        <!-- Tabla Diseño -->
+        <section>
+            <h2>Tabla <em>Diseño</em> (Diseños asociados)</h2>
+            <p><strong>Propósito:</strong> Almacena las propuestas, bocetos o descripciones de los diseños asociados a cada proyecto. Permite llevar historial de las versiones y ajustes estéticos o paisajísticos por proyecto.</p>
+            <h3>Campos</h3>
+            <ul>
+                <li><strong>diseñoID</strong>: Clave primaria (IDENTITY) — identifica cada diseño.</li>
+                <li><strong>proyectoID</strong>: Clave foránea que referencia a <em>Proyecto(proyectoID)</em>.</li>
+                <li><strong>descripcion</strong>: Texto breve que describe el diseño o propuesta (VARCHAR(200)).</li>
+            </ul>
+        </section>
+
+        <!-- Normalización -->
+        <section>
+            <h2>Normalización de la Base de Datos</h2>
+
+            <h3>1NF (Primera Forma Normal)</h3>
+            <p>Cada tabla tiene una clave primaria única y todos los campos contienen valores atómicos (no multivaluados). Ejemplos:</p>
+            <ul>
+                <li><strong>EspecialidadDiseñador</strong>: <code>nombreEspecialidad</code> tiene un único valor por fila.</li>
+                <li><strong>Diseñador</strong>: <code>nombre</code> y <code>especialidadDiseñadorID</code> son campos atómicos.</li>
+                <li><strong>Diseño</strong>: <code>descripcion</code> es un texto único por registro.</li>
+            </ul>
+
+            <h3>2NF (Segunda Forma Normal)</h3>
+            <p>Las tablas que tienen clave compuesta (por ejemplo <em>DiseñadorProyecto</em>) no contienen atributos que dependan sólo de una parte de la clave. Todos los atributos no clave dependen completamente de la clave primaria:</p>
+            <ul>
+                <li><strong>DiseñadorProyecto</strong>: solo contiene las claves foráneas <code>diseñadorID</code> y <code>proyectoID</code>, sin atributos parciales.</li>
+                <li><strong>Diseñador</strong>, <strong>Proyecto</strong>, <strong>Diseño</strong>: sus atributos dependen totalmente de su clave primaria respectiva.</li>
+            </ul>
+
+            <h3>3NF (Tercera Forma Normal)</h3>
+            <p>No hay dependencias transitivas entre atributos no clave. Cada atributo no clave depende únicamente de la clave primaria:</p>
+            <ul>
+                <li><strong>Diseñador</strong>: <code>nombre</code> y <code>especialidadDiseñadorID</code> dependen directamente de <code>diseñadorID</code>.</li>
+                <li><strong>Diseño</strong>: <code>descripcion</code> depende solo de <code>diseñoID</code> y se vincula al proyecto mediante <code>proyectoID</code>.</li>
+            </ul>
+            <p>Con esta estructura se minimizan redundancias y se facilita el mantenimiento, garantizando integridad y claridad en las relaciones.</p>
+        </section>
+
+        <!-- Script SQL de Creación -->
+        <section>
+            <h2>Script SQL de Creación de Tablas</h2>
+            <pre><code>
+CREATE DATABASE Constructora1;
+GO
+USE Constructora1;
+GO
+
+-- ==========================
+-- Tabla Especialidad Diseñador
+-- ==========================
+CREATE TABLE EspecialidadDiseñador (
+    especialidadDiseñadorID INT IDENTITY PRIMARY KEY,
+    nombreEspecialidad VARCHAR(50) NOT NULL
+);
+
+INSERT INTO EspecialidadDiseñador (nombreEspecialidad)
+VALUES ('Interiorista'), ('Paisajista');
+
+-- ==========================
+-- Tabla Diseñadores
+-- ==========================
+CREATE TABLE Diseñador (
+    diseñadorID INT IDENTITY PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    especialidadDiseñadorID INT NOT NULL,
+    FOREIGN KEY (especialidadDiseñadorID) REFERENCES EspecialidadDiseñador(especialidadDiseñadorID)
+);
+
+-- ==========================
+-- Tabla Proyectos
+-- ==========================
+CREATE TABLE Proyecto (
+    proyectoID INT IDENTITY PRIMARY KEY,
+    nombreProyecto VARCHAR(100) NOT NULL
+);
+
+-- Relación muchos a muchos Diseñador - Proyecto
+CREATE TABLE DiseñadorProyecto (
+    diseñadorID INT NOT NULL,
+    proyectoID INT NOT NULL,
+    PRIMARY KEY (diseñadorID, proyectoID),
+    FOREIGN KEY (diseñadorID) REFERENCES Diseñador(diseñadorID),
+    FOREIGN KEY (proyectoID) REFERENCES Proyecto(proyectoID)
+);
+
+-- ==========================
+-- Tabla Diseños Asociados
+-- ==========================
+CREATE TABLE Diseño (
+    diseñoID INT IDENTITY PRIMARY KEY,
+    proyectoID INT NOT NULL,
+    descripcion VARCHAR(200) NOT NULL,
+    FOREIGN KEY (proyectoID) REFERENCES Proyecto(proyectoID)
+);
+            </code></pre>
+        </section>
+
+        <!-- Script de Inserción (opcional) -->
+        <section>
+            <h2>Script de Inserción de Ejemplo (10 registros por tabla)</h2>
+            <p>Aquí puedes colocar los <em>INSERT</em> que poblarán las tablas; si quieres, puedo generarlos ya listos para copiar.</p>
+        </section>
+
+        <!-- Botón de regreso -->
+        <a href="../subsystems/diseñador_interiores.html" class="back-button">← Regresar a Diseñador de Interiores</a>
+    </main>
+
+    <footer>
+        <p>© 2025 Constructora - Subsistema Diseñador de Interiores / Paisajista</p>
+    </footer>
+</body>
+</html>
