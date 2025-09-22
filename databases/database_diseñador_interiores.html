@@ -165,11 +165,92 @@ CREATE TABLE Diseño (
 );
             </code></pre>
         </section>
-
         <!-- Script de Inserción (opcional) -->
         <section>
             <h2>Script de Inserción de Ejemplo (10 registros por tabla)</h2>
-            <p>Aquí puedes colocar los <em>INSERT</em> que poblarán las tablas; si quieres, puedo generarlos ya listos para copiar.</p>
+            <p>A continuación se muestran los <em>INSERT</em> de ejemplo para poblar las tablas con 10 registros cada una.</p>
+
+            <pre><code>
+-- ==========================
+-- Inserts en EspecialidadDiseñador
+-- ==========================
+INSERT INTO EspecialidadDiseñador (nombreEspecialidad)
+VALUES 
+('Urbanista'),
+('Decorador de Interiores'),
+('Diseñador de Mobiliario'),
+('Paisajista Urbano'),
+('Diseñador Ambiental'),
+('Iluminación Interior'),
+('Diseñador de Jardines'),
+('Interiorismo Comercial');
+
+-- Ahora ya tenemos 10 especialidades (2 iniciales + 8 nuevas)
+
+
+-- ==========================
+-- Inserts en Diseñador
+-- ==========================
+INSERT INTO Diseñador (nombre, especialidadDiseñadorID) VALUES
+('Carlos Ramírez', 1),
+('María Torres', 2),
+('Luis Fernández', 3),
+('Ana Gómez', 4),
+('Jorge López', 5),
+('Sofía Martínez', 6),
+('Pedro Hernández', 7),
+('Valeria Ortega', 8),
+('Diego Sánchez', 9),
+('Camila Pérez', 10);
+
+
+-- ==========================
+-- Inserts en Proyecto
+-- ==========================
+INSERT INTO Proyecto (nombreProyecto) VALUES
+('Residencia Las Palmas'),
+('Parque Urbano Central'),
+('Centro Comercial La Estrella'),
+('Edificio Corporativo Nexus'),
+('Jardín Botánico Infantil'),
+('Hotel Boutique Aurora'),
+('Condominio Vista Verde'),
+('Oficinas Torre Delta'),
+('Plaza Cultural Horizonte'),
+('Museo de Arte Moderno');
+
+
+-- ==========================
+-- Inserts en DiseñadorProyecto (relación muchos a muchos)
+-- ==========================
+INSERT INTO DiseñadorProyecto (diseñadorID, proyectoID) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10);
+
+
+-- ==========================
+-- Inserts en Diseño
+-- ==========================
+INSERT INTO Diseño (proyectoID, descripcion) VALUES
+(1, 'Diseño interior de sala y comedor con acabados en madera natural.'),
+(2, 'Plan maestro de paisajismo con áreas verdes y recreativas.'),
+(3, 'Distribución interior de tiendas y espacios comunes.'),
+(4, 'Diseño de oficinas con espacios abiertos y salas de juntas.'),
+(5, 'Zona infantil con jardines temáticos y senderos.'),
+(6, 'Decoración de habitaciones con estilo minimalista.'),
+(7, 'Diseño de áreas comunes y terrazas panorámicas.'),
+(8, 'Interiores de oficinas modernas con iluminación LED.'),
+(9, 'Plaza central con esculturas y espacios culturales.'),
+(10, 'Diseño museográfico de salas y pasillos principales.');
+            </code></pre>
         </section>
 
         <!-- Botón de regreso -->
@@ -181,3 +262,4 @@ CREATE TABLE Diseño (
     </footer>
 </body>
 </html>
+
